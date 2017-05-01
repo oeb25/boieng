@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include "prog.h"
 
-const auto FORWARD = LOW;
-const auto BAKWARD = HIGH;
+const auto FORWARD = HIGH;
+const auto BAKWARD = LOW;
 
 void setup() {
   set_wheel_pins();
@@ -40,10 +40,10 @@ void loop() {
   Serial.println(state_log);
 
   digitalWrite(R_F, state.right > 0 ? FORWARD : BAKWARD);
-  digitalWrite(R_B, state.right < 0 ? FORWARD : BAKWARD);
+  digitalWrite(R_B, state.right <= 0 ? FORWARD : BAKWARD);
 
   digitalWrite(L_F, state.left > 0 ? FORWARD : BAKWARD);
-  digitalWrite(L_B, state.left < 0 ? FORWARD : BAKWARD);
+  digitalWrite(L_B, state.left <= 0 ? FORWARD : BAKWARD);
 
-  delay(100);
+  delay(10);
 }

@@ -1,5 +1,10 @@
 #include <math.h>
 
+struct OutputState {
+  int right;
+  int left;
+};
+
 const int MPU_addr = 0x68;  // I2C address of the MPU-6050
 
 const int L_F = 9;
@@ -29,6 +34,16 @@ void begin_gyro() {
   Wire.endTransmission(true);
 }
 
+String state_to_string(OutputState *state) {
+  String out = "OutputState {\n  right: ";
+  out += state->right;
+  out += ",\n  left: ";
+  out += state->left;
+  out += "\n}";
+
+  return out;
+}
+
 int read_gyro() {
   int AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
@@ -48,8 +63,3 @@ int read_gyro() {
 
   return roll;
 }
-
-struct OutputState {
-  int right;
-  int left;
-};

@@ -11,17 +11,6 @@ void setup() {
   Serial.begin(9600);
 }
 
-String print_state(OutputState *state) {
-  String out = "OutputState { right: ";
-
-  out += state->right;
-  out += ", left: ";
-  out += state->left;
-  out += "}";
-
-  return out;
-}
-
 void loop() {
   // read inputs
 
@@ -46,7 +35,7 @@ void loop() {
 
   // write output state
 
-  String state_log = print_state(&state);
+  String state_log = state_to_string(&state);
 
   Serial.println(state_log);
 

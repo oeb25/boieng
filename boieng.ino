@@ -36,6 +36,8 @@ void loop() {
   // read inputs
 
   float roll = read_gyro();
+  Serial.print("Roll: ");
+  Serial.println(roll);
 
   if (millis() % 1000 < 100) {
     Serial.println("Clearing buffer");
@@ -71,5 +73,5 @@ void loop() {
   analogWrite(L_F, clamp_float_to_1024(state.left));
   analogWrite(L_B, clamp_float_to_1024(-state.left));
 
-  delay(1);
+  delay(10);
 }

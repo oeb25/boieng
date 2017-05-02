@@ -12,7 +12,7 @@ const int L_B = 10;
 const int R_F =  5;
 const int R_B =  6;
 
-const int GYRO_PIN = 3;
+const int GYRO_PIN = 2;
 
 int t = 0;
 int offset = 0;

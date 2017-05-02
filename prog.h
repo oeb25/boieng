@@ -67,3 +67,9 @@ int read_gyro() {
 
   return roll;
 }
+
+void clear_gyro_wire() {
+  while (Wire.available()) {
+    Wire.read();
+  }
+}

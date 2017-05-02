@@ -1,8 +1,8 @@
 #include <math.h>
 
 struct OutputState {
-  int right;
-  int left;
+  float right;
+  float left;
 };
 
 const int MPU_addr = 0x68;  // I2C address of the MPU-6050

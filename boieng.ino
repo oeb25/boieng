@@ -4,6 +4,18 @@
 const auto FORWARD = HIGH;
 const auto BAKWARD = LOW;
 
+// t is 0..1, where 0 is always off and 1 is always on
+bool decide_pwm(float t) {
+  auto time = millis();
+  bool on = time % 100 < (t * 100);
+
+  return on;
+}
+
+void pin_pwm(int pin, float t) {
+  digitalWrite(pin, decide_pwm(t));
+}
+
 void setup() {
   set_wheel_pins();
   begin_gyro();

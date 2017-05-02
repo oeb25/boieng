@@ -23,8 +23,13 @@ void setup() {
   Serial.begin(9600);
 }
 
-float abs_sqrt(float t) {
-  return t < 0 ? -sqrt(-t) : sqrt(t);
+float signed_sqr(float t) {
+  return t < 0 ? -(t * t) : (t * t);
+}
+
+int clamp_float_to_1024(float t) {
+  int f = (int)(t * 1023);
+  return f > 1023 ? 1023 : f < 0 ? 0 : f;
 }
 
 void loop() {
@@ -49,8 +54,8 @@ void loop() {
   // act on inputs
 
   OutputState state = {
-    right: abs_sqrt(roll / 60.0),
-    left: abs_sqrt(roll / 60.0),
+    right: abs(roll) < 1 ? 0 : signed_sqr(roll / 45.0) * 5,
+    left: abs(roll) < 1 ? 0 : signed_sqr(roll / 45.0) * 5,
   };
 
 
@@ -58,13 +63,13 @@ void loop() {
 
   String state_log = state_to_string(&state);
 
-  Serial.println(state_log);
+  // Serial.println(state_log);
 
-  pin_pwm(R_F, state.right > 0 ? state.right : 0);
-  pin_pwm(R_B, state.right < 0 ? -state.right : 0);
+  analogWrite(R_F, clamp_float_to_1024(state.right));
+  analogWrite(R_B, clamp_float_to_1024(-state.right));
 
-  pin_pwm(L_F, state.left > 0 ? state.left : 0);
-  pin_pwm(L_B, state.left < 0 ? -state.left : 0);
+  analogWrite(L_F, clamp_float_to_1024(state.left));
+  analogWrite(L_B, clamp_float_to_1024(-state.left));
 
   delay(1);
 }

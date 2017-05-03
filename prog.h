@@ -48,7 +48,7 @@ String state_to_string(OutputState *state) {
 }
 
 String state_to_string(Gyro *state) {
-  String out = "Gyro {"
+  String out = "Gyro {";
   out += "\n  GyX: ";
   out += state->GyX;
   out += ",\n  GyY: ";

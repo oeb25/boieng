@@ -17,15 +17,12 @@ struct Gyro {
 
 const int MPU_addr = 0x68;  // I2C address of the MPU-6050
 
-const int L_F = 11;
-const int L_B = 10;
-const int R_F =  5;
-const int R_B =  6;
+const int L_F = JOE ? 11 : 11;
+const int L_B = JOE ?  6 : 10;
+const int R_F = JOE ?  9 :  5;
+const int R_B = JOE ? 10 :  6;
 
 const int GYRO_PIN = 2;
-
-int t = 0;
-int offset = 0;
 
 void set_wheel_pins() {
   pinMode(R_F, OUTPUT);
@@ -88,15 +85,17 @@ void read_gyro(Gyro * gyro) {
   gyro->GyZ = Wire.read() << 8 | Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
 }
 
+int initial_roll_offset = 0;
+
 float get_roll(Gyro * gyro) {
   float roll = (atan2(-gyro->AcZ, gyro->AcY) * 180 / 3.14);
 
-  if (offset == 0) {
-    offset = -roll;
+  if (initial_roll_offset == 0) {
+    initial_roll_offset = -roll;
     return 0;
   }
 
-  return roll + offset;
+  return roll + initial_roll_offset;
 }
 
 void clear_gyro_wire() {

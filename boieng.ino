@@ -24,6 +24,8 @@ void wheel(int f, int b, float n) {
   }
 }
 
+bool did_clear = false;
+
 void loop() {
   // read inputs
 
@@ -34,8 +36,12 @@ void loop() {
   float roll = get_roll(&gyro);
 
   if (millis() % 1000 < 100) {
-    Serial.println("Clearing buffer");
-    clear_gyro_wire();
+    if (!did_clear) {
+      did_clear = true;
+      clear_gyro_wire();
+    }
+  } else {
+    did_clear = false;
   }
 
 

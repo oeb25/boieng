@@ -1,8 +1,13 @@
+#include "Arduino.h"
+
 #define JOE 1
 #define MIKE !JOE
 
+bool IS_CONTROLLER = true;
+
 #include <Wire.h>
 #include "prog.h"
+#include "controller.h"
 
 const auto FORWARD = HIGH;
 const auto BAKWARD = LOW;
@@ -14,19 +19,17 @@ void setup() {
   Serial.begin(9600);
 }
 
-void wheel(int f, int b, float n) {
-  if (n < 0.0) {
-    analogWrite(f, 0);
-    analogWrite(b, n > -216 ? round(-n-40) : 255);
-  } else {
-    analogWrite(f, n < 216 ? round(n+40) : 255);
-    analogWrite(b, 0);
-  }
-}
-
 bool did_clear = false;
 
 void loop() {
+  if (IS_CONTROLLER) {
+    do_contoller_rotine();
+
+    delay(10);
+
+    return;
+  }
+
   // read inputs
 
   Gyro gyro;

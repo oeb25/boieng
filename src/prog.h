@@ -29,6 +29,16 @@ void set_wheel_pins() {
   pinMode(L_B, OUTPUT);
 }
 
+void wheel(int f, int b, float n) {
+  if (n < 0.0) {
+    analogWrite(f, 0);
+    analogWrite(b, n > -216 ? round(-n-40) : 255);
+  } else {
+    analogWrite(f, n < 216 ? round(n+40) : 255);
+    analogWrite(b, 0);
+  }
+}
+
 void begin_gyro() {
   Wire.begin();
   Wire.beginTransmission(MPU_addr);

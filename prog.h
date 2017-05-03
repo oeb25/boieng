@@ -5,6 +5,16 @@ struct OutputState {
   float left;
 };
 
+struct Gyro {
+  int AcX;
+  int AcY;
+  int AcZ;
+  int Tmp;
+  int GyX;
+  int GyY;
+  int GyZ;
+};
+
 const int MPU_addr = 0x68;  // I2C address of the MPU-6050
 
 const int L_F = 11;
@@ -44,28 +54,49 @@ String state_to_string(OutputState *state) {
   return out;
 }
 
-int read_gyro() {
-  int AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+String state_to_string(Gyro *state) {
+  String out = "Gyro {\n  AcX: ";
+  out += state->AcX;
+  out += ",\n  AcY: ";
+  out += state->AcY;
+  out += ",\n  AcZ: ";
+  out += state->AcZ;
+  out += ",\n  Tmp: ";
+  out += state->Tmp;
+  out += ",\n  GyX: ";
+  out += state->GyX;
+  out += ",\n  GyY: ";
+  out += state->GyY;
+  out += ",\n  GyZ: ";
+  out += state->GyZ;
+  out += "\n}";
 
+  return out;
+}
+
+void read_gyro(Gyro * gyro) {
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
   Wire.requestFrom(MPU_addr, 14, true);  // request a total of 14 registers
-  AcX = Wire.read() << 8 | Wire.read();  // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)     
-  AcY = Wire.read() << 8 | Wire.read();  // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
-  AcZ = Wire.read() << 8 | Wire.read();  // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)
-  Tmp = Wire.read() << 8 | Wire.read();  // 0x41 (TEMP_OUT_H) & 0x42 (TEMP_OUT_L)
-  GyX = Wire.read() << 8 | Wire.read();  // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
-  GyY = Wire.read() << 8 | Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
-  GyZ = Wire.read() << 8 | Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
-  
+  gyro->AcX = Wire.read() << 8 | Wire.read();  // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)     
+  gyro->AcY = Wire.read() << 8 | Wire.read();  // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
+  gyro->AcZ = Wire.read() << 8 | Wire.read();  // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)
+  gyro->Tmp = Wire.read() << 8 | Wire.read();  // 0x41 (TEMP_OUT_H) & 0x42 (TEMP_OUT_L)
+  gyro->GyX = Wire.read() << 8 | Wire.read();  // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
+  gyro->GyY = Wire.read() << 8 | Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
+  gyro->GyZ = Wire.read() << 8 | Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
+}
+
+float get_roll(Gyro * gyro) {
+  float roll = (atan2(-gyro->AcZ, gyro->AcY) * 180 / 3.14);
+
   if (offset == 0) {
-    offset = -atan2(-AcZ, AcY) * 180 / 3.14;
+    offset = -roll;
+    return 0;
   }
 
-  float roll = (atan2(-AcZ, AcY) * 180 / 3.14) + offset;
-
-  return roll;
+  return roll + offset;
 }
 
 void clear_gyro_wire() {

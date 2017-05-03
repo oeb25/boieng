@@ -35,21 +35,15 @@ int clamp_float_to_1024(float t) {
 void loop() {
   // read inputs
 
-  float roll = read_gyro();
-  Serial.print("Roll: ");
-  Serial.println(roll);
+  Gyro gyro;
+
+  read_gyro(&gyro);
+
+  float roll = get_roll(&gyro);
 
   if (millis() % 1000 < 100) {
     Serial.println("Clearing buffer");
     clear_gyro_wire();
-  }
-
-  if (digitalRead(3) > 0) {
-    if (roll > 0) {
-      offset--;
-    } else if (roll < 0) {
-      offset++;
-    }
   }
 
 
@@ -63,9 +57,9 @@ void loop() {
 
   // write output state
 
-  String state_log = state_to_string(&state);
+  // String state_log = state_to_string(&gyro);
 
-  // Serial.println(state_log);
+  Serial.println(gyro.GyX);
 
   analogWrite(R_F, clamp_float_to_1024(state.right));
   analogWrite(R_B, clamp_float_to_1024(-state.right));
@@ -73,5 +67,5 @@ void loop() {
   analogWrite(L_F, clamp_float_to_1024(state.left));
   analogWrite(L_B, clamp_float_to_1024(-state.left));
 
-  delay(10);
+  delay(100);
 }

@@ -22,7 +22,7 @@ void setup() {
 
   Serial.begin(9600);
 }
-
+/*
 float signed_sqr(float t) {
   return t < 0 ? -(t * t) : (t * t);
 }
@@ -30,34 +30,41 @@ float signed_sqr(float t) {
 int clamp_float_to_1024(float t) {
   int f = (int)(t * 1023);
   return f > 1023 ? 1023 : f < 0 ? 0 : f;
+}*/
+
+void wheel(int f, int b, float n) {
+  Serial.println(n);
+  if (n < 0.0) {
+    analogWrite(f, 0);
+    analogWrite(b, n > -216 ? round(-n-40) : 255);
+  } else {
+    analogWrite(f, n < 216 ? round(n+40) : 255);
+    analogWrite(b, 0);
+  }
 }
 
 void loop() {
   // read inputs
 
   float roll = read_gyro();
-  Serial.print("Roll: ");
-  Serial.println(roll);
 
   if (millis() % 1000 < 100) {
     Serial.println("Clearing buffer");
     clear_gyro_wire();
   }
 
-  if (digitalRead(3) > 0) {
-    if (roll > 0) {
-      offset--;
-    } else if (roll < 0) {
-      offset++;
-    }
-  }
+  roll = tanh(roll / 20) * 200; // Shake
+  //roll = roll * 10; // Shake
+  //roll = roll * 5; // Shake
+  //roll = roll*7;
 
-
+  wheel(R_F, R_B, roll);
+  wheel(L_F, L_B, roll);
   // act on inputs
 
-  OutputState state = {
-    right: abs(roll) < 1 ? 0 : signed_sqr(roll / 45.0) * 5,
-    left: abs(roll) < 1 ? 0 : signed_sqr(roll / 45.0) * 5,
+  /*OutputState state = {
+    right: abs(roll) < 1 ? 0 : signed_sqr(roll / 10.0) * 5,
+    left: abs(roll) < 1 ? 0 : signed_sqr(roll / 10.0) * 5,
   };
 
 
@@ -71,7 +78,7 @@ void loop() {
   analogWrite(R_B, clamp_float_to_1024(-state.right));
 
   analogWrite(L_F, clamp_float_to_1024(state.left));
-  analogWrite(L_B, clamp_float_to_1024(-state.left));
+  analogWrite(L_B, clamp_float_to_1024(-state.left));*/
 
-  delay(10);
+  //delay(1);
 }

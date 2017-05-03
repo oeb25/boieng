@@ -8,9 +8,9 @@ struct OutputState {
 const int MPU_addr = 0x68;  // I2C address of the MPU-6050
 
 const int L_F = 11;
-const int L_B = 10;
-const int R_F =  5;
-const int R_B =  6;
+const int L_B = 6;
+const int R_F =  9;
+const int R_B = 10;
 
 const int GYRO_PIN = 2;
 

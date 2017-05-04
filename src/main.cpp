@@ -3,14 +3,14 @@
 #define JOE 1
 #define MIKE !JOE
 
-bool IS_CONTROLLER = true;
-
 #include <Wire.h>
 #include "prog.h"
 #include "controller.h"
 
 const auto FORWARD = HIGH;
 const auto BAKWARD = LOW;
+
+bool IS_CONTROLLER = true;
 
 void setup() {
   set_wheel_pins();

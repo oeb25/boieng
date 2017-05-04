@@ -6,5 +6,7 @@ if [[ $(which pio) == "" ]]; then
 	brew install platformio
 fi
 
+clear && \
 pio run -t upload && \
+clear && \
 pio serialports monitor -p $(pio serialports list | grep usbmodem)
